@@ -2,25 +2,29 @@ name: Get BOT Exchange Rate
 
 on:
   schedule:
-    # 每天台灣時間下午 3:00 自動執行一次 (UTC 07:00)
+    # 💡 每天台灣時間下午 15:00 自動執行一次 (UTC 07:00)
     - cron: '0 7 * * *'
-  workflow_dispatch: # 允許你手動按按鈕測試
+  workflow_dispatch: # 允許你隨時手動按按鈕測試
 
 jobs:
   run-spider:
     runs-on: ubuntu-latest
     steps:
       - name: 檢查程式碼
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: 設定 Python 環境
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.x'
 
       - name: 安裝必要套件
         run: pip install requests
 
+      - name: 執行抓取並寫入 Google 試算表
+        env:
+          GOOGLE_WEBAPP_URL: ${{ secrets.GOOGLE_WEBAPP_URL }}
+        run: python main.py
       - name: 執行抓取並寫入 Google 試算表
         env:
           GOOGLE_WEBAPP_URL: ${{ secrets.GOOGLE_WEBAPP_URL }}
